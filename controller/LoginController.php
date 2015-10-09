@@ -10,11 +10,13 @@ Class LoginController{
 
 	private $view;
 	private $model;
+   
 	
 		
 		public function __construct(\view\LoginView $view, \model\LoginModel $model) {
 			$this->view = $view;
 			$this->model = $model;
+         //$this->dtv = $dtv;
 		}
 
         /*
@@ -34,7 +36,8 @@ Class LoginController{
                         if($this->view->isLogoutPosted())
                         {
                         	  $this->model->logout();
-                        	  $this->view->setMessage("Bye bye!");
+                             $this->view->setLogoutMessage();
+                        	  //$this->view->setMessage("Bye bye!");
                         }
                         /* 
                          * ... and if not, then user is already logged in and tried that again.
@@ -58,6 +61,7 @@ Class LoginController{
                	        {
                               $this->model->login($this->view->getRequestUserName(), $this->view->getRequestPassword());
                               $this->view->setMessage($this->view->validation());
+
                	        }
                	        // ...and logout was tried, then do nothing but reset the message (from 'Bye bye!' to '')
                	        else
@@ -66,7 +70,10 @@ Class LoginController{
                	        }
                }
                // At the end of the day, re-render (it will check the state of session and set the new message)
-               $this->view->response();
+              
+               $lv = new \view\LayoutView();
+               $dtv = new \view\DateTimeView();
+               $lv->render($this->model->isLoggedIn(), $this->view, $dtv);
 	}
 	
 }

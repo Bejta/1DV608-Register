@@ -4,10 +4,12 @@ namespace model;
 session_start();
 
 
+require_once("model/DAL.php");
+
 class LoginModel{
 
-	private $username = "Admin";
-	private $password = "Password";
+    private $username = "";
+    private $password = "";
 
     // Constructor creates an instance of LoginModel and sets session to true, only if session is not empty and is set
     public function __construct()
@@ -16,13 +18,14 @@ class LoginModel{
             {
                 $_SESSION["statusLogin"] = true;
             }
+
     }
     
     /*
      * Setters and getters of Username and Password (those are incapsulated in the beginning of this class)
      *
      */
-	public function getUsername() 
+    public function getUsername() 
     {
         return $this->username;
     }
@@ -57,11 +60,16 @@ class LoginModel{
     }
     
     // Checks if Username AND Password are correct, and sets the session accordingly.
-	public function login($u, $p){
+    public function login($u, $p){
+           
+            $dal = new \model\DAL();
+            if($dal->IfExists($u) && ($dal->getPassword($u)===$p))
 
-            if($this->getUsername()===$u && $this->getPassword()===$p)
             {
+                $this->setUsername($u);
+                $this->setPassword($p);
+
                 $_SESSION["statusLogin"] = true;
             } 
-	}
+    }
 }

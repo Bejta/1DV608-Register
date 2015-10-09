@@ -41,14 +41,23 @@ class LoginView {
 			else if(!$this->model->isLoggedIn() && ($this->getRequestUserName() != $this->model->getUsername() || $this->getRequestPassword() != $this->model->getPassword()))
 			{
 				return  'Wrong name or password';
-
 			}
 			else if ( $this->model->isLoggedIn())
 			{
 			    return  'Welcome';
 			}
     }
-    
+
+    public function setLogoutMessage()
+	{
+		$this->setMessage('Bye bye!');
+	}
+	
+    public function setSuccessMessage()
+	{
+       $this->setMessage("Registered new user.");
+	}
+
     /*
      * Resets message!
      */
@@ -64,6 +73,7 @@ class LoginView {
     {
           $this->message = $message;
     }
+
 	/**
 	 * Create HTTP response
 	 *
@@ -73,6 +83,12 @@ class LoginView {
 	 */
 	public function response() {
 
+		if(isset($_SESSION['success'])) {
+			$this->setSuccessMessage();
+			$this->setRequestUsername($_SESSION['success']);
+			unset($_SESSION['success']);
+		}
+           
 		if($this->model->isLoggedIn()) 
 		{
 			$response = $this->generateLogoutButtonHTML($this->message);
@@ -126,7 +142,13 @@ class LoginView {
 			</form>
 		';
 	}
-	
+
+	//CREATE SET-FUNCTION 
+	public function setRequestUserName($username)
+	{
+		$_POST[self::$name] = $username;
+	}
+
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	public function getRequestUserName() {
 		//RETURN REQUEST VARIABLE: USERNAME
